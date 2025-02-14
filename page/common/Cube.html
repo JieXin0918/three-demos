@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cube</title>
+    <link rel="stylesheet" href="../common.css" />
+  </head>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three.module.js",
+        "OrbitControls": "../../libs/OrbitControls.js",
+        "initScene": "../../script/initScene.js",
+        "GuiManager": "../../script/GuiManager.js"
+      }
+    }
+  </script>
+  <script src="../../libs/DAT.GUI.min.js"></script>
+
+  <script type="module">
+    import initScene from "initScene";
+    import GuiManager from "GuiManager";
+
+    import { BoxGeometry, MeshPhongMaterial, Mesh, Color } from "three";
+
+    const canvas = document.getElementById("Canvas");
+    const { scene, camera } = initScene(canvas);
+    scene.background = new Color("#000");
+
+    const geometry = new BoxGeometry(10, 10, 10);
+    const material = new MeshPhongMaterial({
+      color: "orange",
+    });
+    const cube = new Mesh(geometry, material);
+    scene.add(cube);
+
+    const gui = new dat.GUI();
+    const guiManager = new GuiManager();
+    const params = [
+      {
+        folderName: "Cube",
+        settings: [
+          {
+            entity: material,
+            type: "material",
+            parameters: {
+              color: { value: `#${material.color.getHexString()}` },
+              visible: { value: material.visible },
+              transparent: { value: material.transparent },
+              opacity: { value: material.opacity, range: [0, 1] },
+              restore: {
+                value: () => {
+                  guiManager.destroy();
+                },
+              },
+            },
+          },
+        ],
+      },
+    ];
+    guiManager.initGuiByName("Cube", gui, params);
+  </script>
+
+  <body>
+    <div style="height: 100vh">
+      <canvas id="Canvas" style="width: 100%; height: 100%; display: block" />
+    </div>
+  </body>
+</html>
