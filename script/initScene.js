@@ -15,6 +15,9 @@ export default function initScene(canvas) {
   const scene = new Scene();
   scene.background = new Color('#000');
 
+  scene.camera = camera;
+  window.scene = scene;
+
   initLight(scene);
   const control = initControls(camera, canvas);
 
