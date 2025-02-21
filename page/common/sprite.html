@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>template</title>
+    <link rel="stylesheet" href="../common.css" />
+  </head>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three.module.js",
+        "OrbitControls": "../../libs/OrbitControls.js",
+        "initScene": "../../script/initScene.js",
+        "GuiManager": "../../script/GuiManager.js",
+        "util": "../../script/utils.js"
+      }
+    }
+  </script>
+  <script src="../../libs/DAT.GUI.min.js"></script>
+
+  <script type="module">
+    import initScene from 'initScene';
+    import GuiManager from 'GuiManager';
+
+    import { BoxGeometry, MeshPhongMaterial, Mesh, Color, Texture, SpriteMaterial, Sprite, Vector2 } from 'three';
+    import { getImage } from "util"
+
+    const canvas = document.getElementById('Canvas');
+    const { scene, camera } = initScene(canvas);
+    scene.background = new Color('#000');
+
+    const geometry = new BoxGeometry(10, 10, 10);
+    const material = new MeshPhongMaterial({
+      color: 'orange',
+    });
+    const cube = new Mesh(geometry, material);
+    scene.add(cube);
+
+    async function createSprite (scene) {
+      const image = await getImage("../../images/sprite.png");
+      const map = new Texture(image);
+      map.needsUpdate = true;
+      const smaterial = new SpriteMaterial({
+        map,
+      });
+      const sprite = new Sprite(smaterial);
+      sprite.scale.set(6, 6, 1);
+      sprite.position.set(0, 5, 0);
+      sprite.center = new Vector2(0.5, 0);
+      scene.add(sprite);
+    }
+
+    createSprite(scene);
+  </script>
+  <body>
+    <div style="height: 100vh">
+      <canvas id="Canvas" style="width: 100%; height: 100%; display: block" />
+    </div>
+  </body>
+</html>
