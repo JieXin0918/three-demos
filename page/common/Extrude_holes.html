@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cube</title>
+    <link rel="stylesheet" href="../common.css" />
+  </head>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three.module.js",
+        "OrbitControls": "../../libs/OrbitControls.js",
+        "initScene": "../../script/initScene.js",
+        "GuiManager": "../../script/GuiManager.js"
+      }
+    }
+  </script>
+  <script src="../../libs/DAT.GUI.min.js"></script>
+
+  <script type="module">
+    import initScene from 'initScene';
+    import GuiManager from 'GuiManager';
+
+    import {
+      Color,
+      Vector2,
+      Mesh,
+      ExtrudeGeometry,
+      MeshPhongMaterial,
+      Path,
+      Shape,
+      ShapePath,
+    } from 'three';
+
+    const canvas = document.getElementById('Canvas');
+    const { scene, camera } = initScene(canvas);
+    scene.background = new Color('#000');
+
+    const simpleShapes = new Shape();
+    simpleShapes.lineTo(10, 0);
+    simpleShapes.lineTo(10, 10);
+    simpleShapes.lineTo(-10, 10);
+    simpleShapes.lineTo(-10, -10);
+    simpleShapes.lineTo(10, -10);
+    simpleShapes.lineTo(10, 0);
+
+    const holesShapePath = new Path();
+    holesShapePath.moveTo(5, 5);
+    holesShapePath.lineTo(8, 5);
+    holesShapePath.lineTo(8, 8);
+    holesShapePath.lineTo(5, 8);
+
+    const holesShapePath1 = new Path();
+    holesShapePath1.absarc(-5, 5, 2);
+
+    simpleShapes.holes.push(holesShapePath, holesShapePath1);
+
+    const extrudeSettings = {
+      depth: 1,
+      bevelEnabled: false,
+    };
+
+    let geometry = new ExtrudeGeometry(simpleShapes, extrudeSettings);
+    const material = new MeshPhongMaterial({ color: 'orange' });
+    let mesh = new Mesh(geometry, material);
+
+    scene.add(mesh);
+  </script>
+
+  <body>
+    <div style="height: 100vh">
+      <canvas id="Canvas" style="width: 100%; height: 100%; display: block" />
+    </div>
+  </body>
+</html>
