@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TubeGeometry</title>
+    <link rel="stylesheet" href="../common.css" />
+  </head>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../libs/three.module.js",
+        "OrbitControls": "../../libs/OrbitControls.js",
+        "initScene": "../../script/initScene.js",
+        "GuiManager": "../../script/GuiManager.js",
+        "util": "../../script/utils.js"
+      }
+    }
+  </script>
+  <script src="../../libs/DAT.GUI.min.js"></script>
+  <script src="../../libs/tween.min.js"></script>
+
+  <script type="module">
+    import initScene from 'initScene';
+    import GuiManager from 'GuiManager';
+    import { loadTexture } from 'util';
+
+    import {
+      TubeGeometry,
+      MeshPhongMaterial,
+      Mesh,
+      Color,
+      CatmullRomCurve3,
+      DoubleSide,
+      Vector3,
+      SpriteMaterial,
+      Sprite,
+    } from 'three';
+
+    const canvas = document.getElementById('Canvas');
+    const { scene, camera } = initScene(canvas);
+    scene.background = new Color('#000');
+
+    const path = new CatmullRomCurve3([
+      new Vector3(-10, -10, 0),
+      new Vector3(0, -10, 0),
+      new Vector3(0, 5, 0),
+      new Vector3(10, 5, 0),
+    ]);
+
+    const pipeGeometry = new TubeGeometry(path, 64, 0.5, 64);
+    const material = new MeshPhongMaterial({ color: 'orange', side: DoubleSide });
+    const mesh = new Mesh(pipeGeometry, material);
+
+    scene.add(mesh);
+
+    const lightTexture = loadTexture('../../images/light.png');
+    const planeMaterial = new SpriteMaterial({
+      depthTest: false,
+      transparent: true,
+      map: lightTexture,
+    });
+    const plane = new Sprite(planeMaterial);
+    scene.add(plane);
+    plane.scale.set(2, 2, 1);
+
+    const { path: geoPath } = mesh.geometry.parameters;
+    const lightAniamte = new TWEEN.Tween({
+      n: 0,
+    })
+      .to(
+        {
+          n: 1,
+        },
+        2000
+      )
+      .repeat(Infinity)
+      .onUpdate((val) => {
+        const pos = geoPath.getPointAt(val.n);
+        plane.position.set(...pos.toArray());
+      })
+      .start();
+  </script>
+
+  <body>
+    <div style="height: 100vh">
+      <canvas id="Canvas" style="width: 100%; height: 100%; display: block" />
+    </div>
+  </body>
+</html>

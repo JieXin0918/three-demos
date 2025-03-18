@@ -28,6 +28,7 @@ export default function initScene(canvas) {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
     renderer.render(scene, camera);
 
+    TWEEN.update();
     control.update();
     requestAnimationFrame(render);
   }
